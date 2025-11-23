@@ -1,0 +1,20 @@
+1
+00:00:06,600 --> 00:00:09,570
+- Let's imagine we
+define a simple enum type
+
+2
+00:00:09,570 --> 00:00:10,440
+like we have here.
+
+3
+00:00:10,440 --> 00:00:12,360
+I've defined an enum type called color.
+
+4
+00:00:12,360 --> 00:00:13,750
+It has a couple of variants,
+
+5
+00:00:13,750 --> 00:00:16,050
+well, three, red, green, and blue.

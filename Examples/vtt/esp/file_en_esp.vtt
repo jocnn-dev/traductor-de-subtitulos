@@ -1,0 +1,25 @@
+WEBVTT
+
+0
+00:00.240 --> 00:02.250
+Ahora intentemos algo.
+
+1
+00:02.400 --> 00:09.870
+Lo que vamos a hacer ahora es cambiar el fondo de la barra y el andamio.
+
+2
+00:10.570 --> 00:15.040
+Si pulsamos el botón del guión, la portada del fondo cambiará.
+
+3
+00:15.860 --> 00:20.210
+Entonces, al principio, declararemos una variable de color.
+
+4
+00:20.480 --> 00:24.890
+Llamémoslo Marrón y contendrá colores.
+
+5
+00:24.890 --> 00:26.240
+Punto marrón.

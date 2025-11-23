@@ -1,0 +1,25 @@
+WEBVTT
+
+0
+00:00.240 --> 00:02.250
+Now let's try something.
+
+1
+00:02.400 --> 00:09.870
+What we are going to do right now is we are going to change the background of the bar and scaffold.
+
+2
+00:10.570 --> 00:15.040
+If we press the dash button, the background cover will swap.
+
+3
+00:15.860 --> 00:20.210
+So at the first, we're going to declare a color variable.
+
+4
+00:20.480 --> 00:24.890
+Let's name it Brown and it will contain colors.
+
+5
+00:24.890 --> 00:26.240
+Dot brown.
