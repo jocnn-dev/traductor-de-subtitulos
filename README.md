@@ -22,8 +22,7 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
 ## Dataset Preparation
 | Dataset               | Download     |
 | --------------------- | ------------ |
-| Subtítulos de ejemplo | [Descargar ejemplos](https://github.com/jocnn-dev/traductor-de-subtitulos/Examples) |
-
+| Subtítulos de ejemplo | [Descargar ejemplos](https://github.com/jocnn-dev/traductor-de-subtitulos/tree/main/Examples) |
 
 ## Use
 - for translate subtitles
