@@ -63,8 +63,8 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
 - Instalación rápida
     Clona o descarga el repositorio
     ```
-    > git clone https://github.com/TU_USUARIO/vtt-srt-traductor.git
-    > cd vtt-srt-traductor
+    > git clone https://github.com/jocnn-dev/traductor-de-subtitulos.git
+    > cd traductor-de-subtitulos
     ```
 - Crea y activa tu entorno virtual
     ```
