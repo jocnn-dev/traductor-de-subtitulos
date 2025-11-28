@@ -37,7 +37,7 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
 ## Directory Hierarchy
 ```
 |—— requirements.txt
-|—— vtt_traduce.py
+|—— traduce.py
 |—— README.md
 |—— Examples in .vtt and .srt
 ```
@@ -85,7 +85,7 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
   Copia todos tus archivos .vtt o .srt en cualquier carpeta (pueden estar anidadas).
   Desde esa carpeta ejecuta:
   ```
-  > python vtt_traduce.py
+  > python traduce.py
   ```
 - Las traducciones aparecerán dentro de una sub-carpeta esp/ con el sufijo _esp en el nombre:
   ```
@@ -94,6 +94,9 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
   │  ├─ leccion1.mp4
   │  ├─ leccion1.vtt
   │  ├─ ...
+  │  └─ en/
+  │     └─ leccion1_en.vtt
+  │     └─ ...
   │  └─ esp/
   │     └─ leccion1_esp.vtt
   │     └─ ...
