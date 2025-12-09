@@ -38,6 +38,7 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
 ```
 |—— requirements.txt
 |—— traduce.py
+|—— diccionario_no_traducir.py
 |—— README.md
 |—— Examples in .vtt and .srt
 ```
@@ -84,9 +85,19 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
 - Cómo usar
   Copia todos tus archivos .vtt o .srt en cualquier carpeta (pueden estar anidadas).
   Desde esa carpeta ejecuta:
-  ```
+    * Sin --use-dict → solo se protege lo que coincida con TIPOS_DATO
+    * Con --use-dict → se protege además lo que esté en PALABRAS
+
+```
+  # traducción normal (solo tipos de datos protegidos)
   > python traduce.py
-  ```
+
+  # traducción + diccionario de palabras
+  > python traduce.py --use-dict
+
+  # ayuda
+  > python traduce.py -h
+```
 - Las traducciones aparecerán dentro de una sub-carpeta esp/ con el sufijo _esp en el nombre:
   ```
   Curso/

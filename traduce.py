@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
 Traduce archivos .vtt/.srt de inglés a español.
-1. Traduce cada archivo donde está y guarda en sub-carpeta 'esp/' (mismo nivel).
-2. Al finalizar, mueve los originales (sin renombrar) a sub-carpeta 'en/' (mismo nivel).
-3. Cada carpeta tendrá su par 'en/' y 'esp/' sin anidaciones.
+Flag: --use-dict  → protege palabras del diccionario + tipos de datos
+       (sin flag) → solo protege tipos de datos (mejor fluidez)
 """
 
 from __future__ import annotations
@@ -11,14 +10,16 @@ from __future__ import annotations
 import re
 import time
 import shutil
+import argparse
 from pathlib import Path
 from deep_translator import GoogleTranslator
+from diccionario_no_traducir import TIPOS_DATO
 from tqdm import tqdm
 
 # ------------------ configuración ------------------
-TRAD_SUFIJO = "_esp"  # sufijo final
-SUB_DIR_EN = "en"  # sub-carpeta originales (al final)
-SUB_DIR_ES = "esp"  # sub-carpeta traducciones (durante)
+TRAD_SUFIJO = "_esp"
+SUB_DIR_EN = "en"
+SUB_DIR_ES = "esp"
 DELAY = 0.4
 ENCODING = "utf-8"
 
@@ -31,21 +32,66 @@ RE_META = re.compile(
 )
 
 tr = GoogleTranslator(source="en", target="es")
+
 # --------------------------------------------------
+# FLAG: --use-dict
+parser = argparse.ArgumentParser(
+    description="Traduce subtítulos .vtt/.srt de inglés a español."
+)
+parser.add_argument(
+    "--use-dict",
+    action="store_true",
+    help="Usa diccionario de palabras reservadas además de tipos de datos",
+)
+args = parser.parse_args()
+USAR_DICT = args.use_dict
+# --------------------------------------------------
+
+
+def cargar_diccionario() -> set[str]:
+    try:
+        from diccionario_no_traducir import PALABRAS
+
+        return PALABRAS
+    except ImportError:
+        return set()
 
 
 def traduce_bloque(texto: str) -> str:
     if not texto.strip():
         return texto
+
+    # 1) Reservar tipos de datos
+    def _reservar(match: re.Match) -> str:
+        return f"{{{{{match.group(0)}}}}}"
+
+    protegido = TIPOS_DATO.sub(_reservar, texto)
+
+    # 2) Si se usó --use-dict, proteger palabras sueltas
+    if USAR_DICT:
+        palabras = cargar_diccionario()
+        tokens = re.findall(r"[A-Za-z][A-Za-z0-9_]*|[^A-Za-z0-9_]+", protegido)
+        aux = []
+        for tok in tokens:
+            lower = tok.lower()
+            if lower in palabras:
+                aux.append(f"{{{{{tok}}}}}")
+            else:
+                aux.append(tok)
+        protegido = "".join(aux)
+
+    # 3) Traducir bloque completo
     try:
         time.sleep(DELAY)
-        trad = tr.translate(texto)
+        trad = tr.translate(protegido)
         if trad is None:
-            raise ValueError("respuesta vacía")
-        return trad
+            raise ValueError("vacío")
     except Exception as exc:
         print(f"      ░ traducción fallida: {exc}")
-        return texto
+        trad = protegido
+
+    # 4) Quitar {{{...}}}
+    return re.sub(r"\{\{\{.*?\}\}\}", lambda m: m.group(0)[3:-3], trad)
 
 
 def ya_esta_traducido(orig: Path, trad: Path) -> bool:
@@ -56,22 +102,17 @@ def ya_esta_traducido(orig: Path, trad: Path) -> bool:
 
 
 def nombre_traducido(ruta: Path) -> str:
-    """
-    Quita '.en' o '_en' antes de la extensión y pone '_esp'.
-    Ej: 67 - Introduction to Copilot Studio.en.srt → 67 - Introduction to Copilot Studio_esp.srt
-    """
     base = ruta.with_suffix("").name
     if base.endswith(".en"):
         base = base[:-3]
     elif base.endswith("_en"):
         base = base[:-3]
+    elif base.endswith("-en"):
+        base = base[:-3]
     return base + "_esp" + ruta.suffix
 
 
 def mover_originales_al_final(originales: list[Path]) -> None:
-    """
-    Al finalizar, mueve los archivos originales (lista) a sub-carpeta 'en/' (mismo nivel).
-    """
     for orig in originales:
         carpeta_en = orig.parent / SUB_DIR_EN
         carpeta_en.mkdir(exist_ok=True)
@@ -82,19 +123,16 @@ def mover_originales_al_final(originales: list[Path]) -> None:
 
 
 def traduce_archivo(ruta: Path) -> Path | None:
-    # 1) Sub-carpeta 'esp' en la misma carpeta del archivo
     carpeta_es = ruta.parent / SUB_DIR_ES
     carpeta_es.mkdir(exist_ok=True)
     ruta_trad = carpeta_es / nombre_traducido(ruta)
 
-    # 2) ¿Ya traducido?
     if ya_esta_traducido(ruta, ruta_trad):
         print(f"  ⏩  {ruta.parent.name}/{ruta.name}  ->  ya traducido")
         return None
 
     print(f"\n  >>> {ruta.parent.name}/{ruta.name}")
 
-    # 3) Traducción
     lineas_out = []
     buffer = []
 
@@ -117,7 +155,6 @@ def traduce_archivo(ruta: Path) -> Path | None:
             buffer.append(lin)
     vacia_buffer()
 
-    # 4) Guardar
     ruta_trad.write_text("".join(lineas_out), encoding=ENCODING)
     print(f"      ✓ guardado: {ruta_trad}")
     return ruta_trad
@@ -136,8 +173,11 @@ def main() -> None:
         return
 
     print(f"Se encontraron {len(archivos)} archivos\n")
+    if USAR_DICT:
+        print("Modo: protegiendo tipos de datos + diccionario.")
+    else:
+        print("Modo: protegiendo solo tipos de datos.")
 
-    # Lista de originales que hay que mover al final
     originales_a_mover = [
         p
         for p in archivos
@@ -145,11 +185,9 @@ def main() -> None:
         or p.with_suffix("").name.endswith("_en")
     ]
 
-    # Traducción
     for archivo in archivos:
         traduce_archivo(archivo)
 
-    # mover originales al final
     print("\nMoviendo archivos originales a sus carpetas 'en/' ...")
     mover_originales_al_final(originales_a_mover)
 
