@@ -98,6 +98,11 @@ Abstract: Traduce archivos de subtítulos .vtt y .srt de inglés a español cons
   # ayuda
   > python traduce.py -h
 ```
+- Usar de las pruebas
+```
+  > python test_metodos.py
+```
+
 - Las traducciones aparecerán dentro de una sub-carpeta esp/ con el sufijo _esp en el nombre:
   ```
   Curso/
