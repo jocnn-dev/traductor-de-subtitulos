@@ -1087,13 +1087,3 @@ PALABRAS = {
     "post-receive",
     *CYBER,
 }
-
-
-# Regex para tipos de datos con números / genéricos
-# Ej: i64, f32, Vec<T>, Option<T>, [T; N], fn(T)->U
-TIPOS_DATO = re.compile(
-    r"\b[a-zA-Z_][a-zA-Z0-9_]*\d+\b|"  # i64, u32, f32, i128, u256
-    r"\b[a-zA-Z_][a-zA-Z0-9_]*<[^>]*>|"  # Vec<T>, Option<T>, Result<T,E>
-    r"\[.*?\]|"  # [T; N]
-    r"fn\([^)]*\)->[^,;.\s]+"  # fn(T)->U
-)
