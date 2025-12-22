@@ -110,7 +110,7 @@ def ya_esta_traducido(orig: Path, trad: Path) -> bool:
 
 def nombre_traducido(ruta: Path) -> str:
     base = ruta.with_suffix("").name
-    for suf in (".en", "_en", "-en"):
+    for suf in (".en", "_en", "-en", "en_US"):
         if base.endswith(suf):
             base = base[: -len(suf)]
             break
@@ -204,7 +204,7 @@ def main() -> None:
         originales_a_mover = [
             p
             for p in candidatos
-            if p.with_suffix("").name.endswith((".en", "_en", "-en"))
+            if p.with_suffix("").name.endswith((".en", "_en", "-en", "en_US"))
         ]
 
         # 2) Procesar UNA carpeta completa antes de pasar a la siguiente
